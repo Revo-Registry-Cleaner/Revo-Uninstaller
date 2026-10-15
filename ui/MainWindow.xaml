@@ -1,0 +1,132 @@
+<controls:ZidimiWindow x:Class="Zidimi.Uninstaller.MainWindow"
+               xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+               xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+               xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+               xmlns:controls="clr-namespace:Zidimi.Uninstaller.Controls"
+               xmlns:views="clr-namespace:Zidimi.Uninstaller.Views"
+               xmlns:vm="clr-namespace:Zidimi.Uninstaller.ViewModels"
+               mc:Ignorable="d"
+               WindowStyle="SingleBorderWindow"
+               Title="Zidimi Uninstaller" Height="680" Width="1040"
+               MinHeight="540" MinWidth="820"
+               Background="{DynamicResource SurfaceBrush}"
+               WindowStartupLocation="CenterScreen"
+               Icon="/icon_all_res.ico"
+               
+               UseLayoutRounding="True"
+               SnapsToDevicePixels="True"
+               TextOptions.TextFormattingMode="Display"
+               TextOptions.TextRenderingMode="ClearType"
+               TextOptions.TextHintingMode="Fixed">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <views:SidebarView Grid.Column="0"/>
+
+        <!-- Main content area -->
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Border Grid.Row="0"
+                    Padding="18,13,18,11"
+                    BorderBrush="{DynamicResource BorderBrush}"
+                    BorderThickness="0,0,0,1">
+                <StackPanel>
+                    <TextBlock Text="{Binding PageTitle}"
+                               FontSize="22"
+                               FontWeight="SemiBold"
+                               Foreground="{DynamicResource TextPrimaryBrush}"/>
+                    <TextBlock Text="{Binding PageSubtitle}"
+                               Margin="0,3,0,0"
+                               FontSize="12"
+                               Foreground="{DynamicResource TextSecondaryBrush}"/>
+                </StackPanel>
+            </Border>
+
+            <ContentControl Grid.Row="1" Content="{Binding CurrentView}" Focusable="False">
+                <ContentControl.Resources>
+                    <DataTemplate DataType="{x:Type vm:DashboardViewModel}">
+                        <views:DashboardView/>
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type vm:ApplicationsViewModel}">
+                        <views:ApplicationsView/>
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type vm:StoreAppsViewModel}">
+                        <views:StoreAppsView/>
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type vm:StartupViewModel}">
+                        <views:StartupView/>
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type vm:PackagesViewModel}">
+                        <views:PackagesView/>
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type vm:WindowsFeaturesViewModel}">
+                        <views:WindowsFeaturesView/>
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type vm:SettingsViewModel}">
+                        <views:SettingsView/>
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type vm:LeftoversViewModel}">
+                        <views:LeftoversView/>
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type vm:HistoryViewModel}">
+                        <views:HistoryView/>
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type vm:InstallMonitorViewModel}">
+                        <views:InstallMonitorView/>
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type vm:BrowserExtensionsViewModel}">
+                        <views:BrowserExtensionsView/>
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type vm:SoftwareHealthViewModel}">
+                        <views:SoftwareHealthView/>
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type vm:RecoveryVaultViewModel}">
+                        <views:RecoveryVaultView/>
+                    </DataTemplate>
+                </ContentControl.Resources>
+            </ContentControl>
+        </Grid>
+
+        <!-- Confirmation dialog -->
+        <controls:ZidimiDialog Grid.Column="0" Grid.ColumnSpan="2" x:Name="ConfirmDialog"
+                          Panel.ZIndex="100"/>
+
+        <!-- Modal overlays: each hosts one modal view behind a dimmed, click-to-beep backdrop. -->
+        <controls:ZidimiModalOverlay Grid.Column="0" Grid.ColumnSpan="2"
+                                      IsOpen="{Binding IsAboutModalOpen}"
+                                      Panel.ZIndex="110">
+            <views:AboutModal DataContext="{Binding}"/>
+        </controls:ZidimiModalOverlay>
+
+        <controls:ZidimiModalOverlay Grid.Column="0" Grid.ColumnSpan="2"
+                                      IsOpen="{Binding Applications.IsDetailsModalOpen}"
+                                      Panel.ZIndex="105">
+            <views:AppDetailsModal DataContext="{Binding Applications}"/>
+        </controls:ZidimiModalOverlay>
+
+        <controls:ZidimiModalOverlay Grid.Column="0" Grid.ColumnSpan="2"
+                                      IsOpen="{Binding Startup.IsDetailsModalOpen}"
+                                      Panel.ZIndex="106">
+            <views:StartupDetailsModal DataContext="{Binding Startup}"/>
+        </controls:ZidimiModalOverlay>
+
+        <controls:ZidimiModalOverlay Grid.Column="0" Grid.ColumnSpan="2"
+                                      IsOpen="{Binding DeepClean.IsOpen}"
+                                      Panel.ZIndex="95">
+            <views:DeepCleanView DataContext="{Binding DeepClean}"/>
+        </controls:ZidimiModalOverlay>
+
+        <!-- Toast notifications -->
+        <controls:ZidimiToastHost Grid.Column="1" x:Name="ToastHost"
+                             HorizontalAlignment="Right" VerticalAlignment="Top"
+                             Margin="0,64,14,0" Panel.ZIndex="90"/>
+    </Grid>
+</controls:ZidimiWindow>
